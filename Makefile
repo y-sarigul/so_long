@@ -10,34 +10,44 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME		:= so_long.a 
+NAME			:= fdf.a 
 
-OBJDIR		:= objects
-LIBFT		:= $(OBJDIR)/libft.a
-FT_PRINTF	:=$(OBJDIR)/ft_printf.a
-MLX := $(OBJDIR)/libmlx.a
+OBJDIR		:= obj
+LIBFT			:= $(OBJDIR)/libft.a
+FT_PRINTF	:= $(OBJDIR)/ft_printf.a
+GET				:= $(OBJDIR)/get_next_line.a
+MLX 			:= $(OBJDIR)/libmlx.a
+SRC 			:= $(OBJEDIR)/src.a
 CC		:= cc
-CFLAGS	:= -Wall -Wextra -Werror -I ./include
+CFLAGS	:= -Wall -Wextra -Werror -I ./inc
 
-$(NAME): $(OBJDIR) $(LIBFT) $(FT_PRINTF) $(MLX)
-	@ar -rcs $(NAME) $(OBJDIR)/*.o 
+$(NAME): $(OBJDIR) $(LIBFT) $(FT_PRINTF) $(GET) $(MLX) $(SRC)
+	@ar -rcs ./lib/$(NAME) $(OBJDIR)/*.o 
+	@gcc ./src/main_and_solve_driver.c ./lib/fdf.a -framework OpenGL -framework AppKit -o fdf -I ./inc
 
 $(OBJDIR):
+	@echo "Creating objects file"
 	@mkdir -p $(OBJDIR)
 
 $(LIBFT):
-	@make -C libft
+	@echo "Libft creating"
+	@make -C ./lib/libft
 
 $(FT_PRINTF):
-	@make -C ft_printf
+	@echo "Ft_printf creating"
+	@make -C ./lib/ft_printf
 
-$(PUSH_SWAP):
-	@make -C push_swap
+$(GET):
+	@echo "Get Next Line creating"
+	@make -C ./lib/get_next_line/
+
+$(SRC):
+	@echo "Src creating"
+	@make -C src 
 
 $(MLX):
-	@make -C mlx
-	@mv ./mlx/*.o ./objects
-	@mv ./mlx/*.a ./objects
+	@make -C ./lib/mlx
+	@mv ./lib/mlx/*.o ./obj
 
 
 all: $(NAME)
@@ -48,6 +58,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@rm -rf $(OBJDIR)
+	@rm -rf ./lib/mlx/*.o
 
 re: fclean all
 m:
